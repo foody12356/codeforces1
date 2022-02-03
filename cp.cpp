@@ -1,22 +1,8 @@
-/*You have n students under your control and you have to compose exactly two teams consisting of some subset of your students. Each student had his own skill, the i-th student skill is denoted by an integer ai (different students can have the same skills).
+/*After you had helped George and Alex to move in the dorm, they went to help their friend Fedor play a new computer game «Call of Soldiers 3».
 
-So, about the teams. Firstly, these two teams should have the same size. Two more constraints:
+The game has (m + 1) players and n types of soldiers in total. Players «Call of Soldiers 3» are numbered form 1 to (m + 1). Types of soldiers are numbered from 0 to n - 1. Each player has an army. Army of the i-th player can be described by non-negative integer xi. Consider binary representation of xi: if the j-th bit of number xi equal to one, then the army of the i-th player has soldiers of the j-th type.
 
-The first team should consist of students with distinct skills (i.e. all skills in the first team are unique).
-The second team should consist of students with the same skills (i.e. all skills in the second team are equal).
-Note that it is permissible that some student of the first team has the same skill as a student of the second team.
-
-Consider some examples (skills are given):
-
-[1,2,3], [4,4] is not a good pair of teams because sizes should be the same;
-[1,1,2], [3,3,3] is not a good pair of teams because the first team should not contain students with the same skills;
-[1,2,3], [3,4,4] is not a good pair of teams because the second team should contain students with the same skills;
-[1,2,3], [3,3,3] is a good pair of teams;
-[5], [6] is a good pair of teams.
-Your task is to find the maximum possible size x for which it is possible to compose a valid pair of teams, where each team size is x (skills in the first team needed to be unique, skills in the second team should be the same between them). A student cannot be part of more than one team.
-
-You have to answer t independent test cases.*/
-
+Fedor is the (m + 1)-th player of the game. He assume that two players can become friends if their armies differ in at most k types of soldiers (in other words, binary representations of the corresponding numbers differ in at most k bits). Help Fedor and count how many players can become his friends.*/
 #include <bits/stdc++.h>
 using namespace std;
 const int MAX_CHAR = 26;
@@ -95,24 +81,36 @@ int bs(int a[], int n, int j)
 			return mid;
 	}
 }
- 
+ int solve(int A, int B)
+{
+    int XOR = A ^ B;
+    // Check for 1's in the binary form using
+    // Brian Kerninghan's Algorithm
+    int count = 0;
+    while (XOR) {
+        XOR = XOR & (XOR - 1);
+        count++;
+    }
+    return count;
+}
 void solve()
 {
-	int t,n,a;
-	cin>>n; int ar[n];
- 
-		int mx=0,x=0;
- 
-		for(int i=1;i<=n;i++)ar[i]=0;
- 
-		for(int i=1;i<=n;i++)
-            {
-			cin>>a;
-			ar[a]++;
-			if(ar[a]==1)x++;
-		  mx=max(mx,ar[a]);
+	int n,m,k;
+	cin>>n>>m>>k;
+	int a[m+1];
+	for(int i=0;i<m+1;i++)
+	cin>>a[i];
+	int i=0,c=0;
+	while(i<m)
+	{
+		int d = solve(a[i],a[m]);
+		if(d<=k)
+		{
+		c++;
 		}
-		cout<<max(min(x-1,mx),min(x,mx-1))<<endl;
+		i++;
+	}
+	cout<<c<<endl;
 }
 int32_t main()
 {
@@ -122,7 +120,7 @@ int32_t main()
 	clock_t z = clock();
  
 	int t = 1;
-	cin >> t;
+	//cin >> t;
 	while (t--)
 		solve();
 	cerr << "Run Time : " << ((double)(clock() - z) / CLOCKS_PER_SEC);
